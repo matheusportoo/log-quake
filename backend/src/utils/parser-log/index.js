@@ -1,71 +1,78 @@
-const fs = require('fs');
-const { promisify } = require('util');
-
-const { pathLog, encodingLog } = require('../../config/log');
 const patterns = require('./patterns');
 
-const deadByWorld = '<world>';
-const games = [];
+const DEAD_BY_WORLD = '<world>';
 
-let file = null;
-let countGames = 0;
-
-const readFileAsync = promisify(fs.readFile)
-
-const setGame = () => {
-  countGames += 1;
-
-  games[`game_${countGames}`] = {
-    total_kills: 0,
-    players: [],
-    kills: {}
-  }
-};
-
-const setPlayers = (line) => {
-  const [id, player] = line
-    .replace(patterns.player, '')
-    .trim().split('n\\');
-
-  const playerUpdated = games[`game_${countGames}`].players.findIndex(player => player.id === id.trim());
-
-  if (playerUpdated > -1) {
-    games[`game_${countGames}`].players[playerUpdated].player = player;
-    return;
+class ParserLog {
+  constructor(log) {
+    this.log = log;
+    this.lines = null;
+    this.games = [];
+    this.countGames = 0;
   }
 
-  games[`game_${countGames}`].players.push({ id: id.trim(), player: player.trim() });
-  games[`game_${countGames}`].kills[player] = 0;
-};
+  init() {
+    this.lines = this.log.trim().split('\n');
 
-const setKills = (line) => {
-  const [killerPlayer,, killedPlayer] = line.replace(patterns.killers, '')
-    .trim().split(' ');
+    this.lines.forEach(line => {
+      if (line.match(patterns.initGame)) { this.setGame(); }
+      if (line.match(patterns.player)) { this.setPlayers(line); }
+      if (line.match(patterns.killers)) { this.setKills(line); }
+    });
 
-  games[`game_${countGames}`].total_kills += 1;
-
-  if (killerPlayer === deadByWorld) {
-    games[`game_${countGames}`].kills[killedPlayer] -= 1;
-    return;
+    return this;
   }
 
-  games[`game_${countGames}`].kills[killerPlayer] += 1;
-};
+  getData() {
+    return this.games;
+  }
 
-const getData = async () => {
-  const file = await readFileAsync(pathLog, { encoding: encodingLog });
+  setGame() {
+    this.countGames += 1;
 
-  lines = file.trim().split('\n');
+    this.games.push({
+      [`game_${this.countGames}`]: {
+        total_kills: 0,
+        players: [],
+        kills: {}
+      }
+    });
+  }
 
-  lines.forEach((line, i) => {
-    if (line.match(patterns.initGame)) { setGame() }
-    if (line.match(patterns.player)) { setPlayers(line) }
-    if (line.match(patterns.killers)) { setKills(line) }
-  });
+  setPlayers(line) {
+    const [id, player] = line.replace(patterns.player, '').trim().split('n\\');
+    const countGames = this.countGames;
+    const position = this.countGames - 1;
 
-  return games;
-};
+    const playerUpdated = this.games[position][`game_${countGames}`].players
+      .findIndex(player => player.id === id.trim());
 
-module.exports = {
-  getData,
-};
+    if (playerUpdated > -1) {
+      this.games[position][`game_${countGames}`].players[playerUpdated].name = player;
+      return;
+    }
+
+    this.games[position][`game_${countGames}`].players.push({ id: id.trim(), name: player.trim() });
+    this.games[position][`game_${countGames}`].kills[player] = 0;
+  }
+
+  setKills(line) {
+    const [killerPlayer,, killedPlayer] = line.replace(patterns.killers, '').trim().split(' ');
+    const countGames = this.countGames;
+    const position = this.countGames - 1;
+    const hasPlayer = this.games[position][`game_${countGames}`].players
+      .find(player => player.name === killerPlayer)
+
+    this.games[position][`game_${countGames}`].total_kills += 1;
+
+    if (killerPlayer === DEAD_BY_WORLD) {
+      this.games[position][`game_${countGames}`].kills[killedPlayer] -= 1;
+      return;
+    }
+
+    if (hasPlayer) {
+      this.games[position][`game_${countGames}`].kills[killerPlayer] += 1;
+    }
+  }
+}
+
+module.exports = ParserLog;
