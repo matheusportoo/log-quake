@@ -13,10 +13,10 @@ class ParserLog {
   init() {
     this.lines = this.log.trim().split('\n');
 
-    this.lines.forEach(line => {
+    this.lines.forEach((line, index) => {
       if (line.match(patterns.initGame)) { this.setGame(); }
       if (line.match(patterns.player)) { this.setPlayers(line); }
-      if (line.match(patterns.killers)) { this.setKills(line); }
+      if (line.match(patterns.killers)) { this.setKills(line, index); }
     });
 
     return this;
@@ -39,7 +39,7 @@ class ParserLog {
   }
 
   setPlayers(line) {
-    const [id, player] = line.replace(patterns.player, '').trim().split('n\\');
+    const [id, name] = line.replace(patterns.player, '').trim().split('n\\');
     const countGames = this.countGames;
     const position = this.countGames - 1;
 
@@ -47,16 +47,21 @@ class ParserLog {
       .findIndex(player => player.id === id.trim());
 
     if (playerUpdated > -1) {
-      this.games[position][`game_${countGames}`].players[playerUpdated].name = player;
+      this.games[position][`game_${countGames}`].players[playerUpdated].name = name;
       return;
     }
 
-    this.games[position][`game_${countGames}`].players.push({ id: id.trim(), name: player.trim() });
-    this.games[position][`game_${countGames}`].kills[player] = 0;
+    this.games[position][`game_${countGames}`].players.push({ id: id.trim(), name: name.trim() });
+    this.games[position][`game_${countGames}`].kills[name] = 0;
   }
 
-  setKills(line) {
-    const [killerPlayer,, killedPlayer] = line.replace(patterns.killers, '').trim().split(' ');
+  setKills(line, index) {
+    const [killerPlayer, killedPlayer] = line
+      .replace(patterns.killers, '')
+      .trim()
+      .split('killed')
+      .map(name => name.trim());
+
     const countGames = this.countGames;
     const position = this.countGames - 1;
     const hasPlayer = this.games[position][`game_${countGames}`].players
@@ -64,12 +69,32 @@ class ParserLog {
 
     this.games[position][`game_${countGames}`].total_kills += 1;
 
+    console.log({
+      killedPlayer,
+      killerPlayer,
+      line: line.replace(patterns.killers, '').trim().split('killed')
+    })
+
     if (killerPlayer === DEAD_BY_WORLD) {
+      console.log('line killed by world', {
+        index,
+        line,
+        killerPlayer,
+        killedPlayer,
+      });
+      console.log('\n')
       this.games[position][`game_${countGames}`].kills[killedPlayer] -= 1;
       return;
     }
 
     if (hasPlayer) {
+      console.log('line killed by player', {
+        index,
+        line,
+        killerPlayer,
+        killedPlayer,
+      });
+      console.log('\n')
       this.games[position][`game_${countGames}`].kills[killerPlayer] += 1;
     }
   }
