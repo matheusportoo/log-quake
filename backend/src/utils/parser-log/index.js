@@ -1,4 +1,4 @@
-const patterns = require('./patterns');
+const { patterns, replaceLine } = require('./utils');
 
 const DEAD_BY_WORLD = '<world>';
 const PREFIX_KEY_GAME = 'game_';
@@ -13,6 +13,10 @@ class ParserLog {
     this.countGames = 0;
 
     this.init();
+  }
+
+  static replaceLine(line, pattern) {
+    return line.replace(pattern, '').trim();
   }
 
   init() {
@@ -78,9 +82,9 @@ class ParserLog {
 
   setPlayers(line) {
     const keyGame = this.getKeyGame();
-    const playerId = line.replace(patterns.playerConnect, '').trim();
+    const playerId = replaceLine(line, patterns.playerConnect);
     const playerIndex = this.players[keyGame]
-      .findIndex(player => player.id === playerId.trim());
+      .findIndex(player => player.id === playerId);
 
     if (playerIndex === -1) {
       this.players[keyGame].push({ id: playerId, name: '', kills: 0 })
@@ -89,7 +93,7 @@ class ParserLog {
 
   updatePlayerName(line) {
     const keyGame = this.getKeyGame();
-    const [id, name] = line.replace(patterns.playerInfoChanged, '').trim().split('n\\');
+    const [id, name] = replaceLine(line, patterns.playerInfoChanged).split('n\\');
     const playerIndex = this.players[keyGame]
       .findIndex(player => player.id === id.trim());
 
@@ -100,7 +104,7 @@ class ParserLog {
 
   updatePlayerKills(line) {
     const keyGame = this.getKeyGame();
-    const [ids, names] = line.replace(patterns.killers, '').trim().split(': ');
+    const [ids, names] = replaceLine(line, patterns.killers).split(': ');
     const [killerPlayerId, killedPlayerId, ] = ids.split(' ');
     const isDeadByWorld = names.includes(DEAD_BY_WORLD);
     const playerId = isDeadByWorld ? killedPlayerId : killerPlayerId;
