@@ -1,101 +1,119 @@
 const patterns = require('./patterns');
 
 const DEAD_BY_WORLD = '<world>';
+const PREFIX_KEY_GAME = 'game_';
 
 class ParserLog {
   constructor(log) {
     this.log = log;
     this.lines = null;
     this.games = [];
+    this.players = {};
+    this.totalResults = {};
     this.countGames = 0;
+
+    this.init();
   }
 
   init() {
     this.lines = this.log.trim().split('\n');
 
-    this.lines.forEach((line, index) => {
-      if (line.match(patterns.initGame)) { this.setGame(); }
-      if (line.match(patterns.player)) { this.setPlayers(line); }
-      if (line.match(patterns.killers)) { this.setKills(line, index); }
-    });
+    this.lines.forEach((line) => {
+      if (line.match(patterns.initGame)) { this.initGame(); }
+      if (line.match(patterns.playerConnect)) { this.setPlayers(line); }
+      if (line.match(patterns.playerInfoChanged)) { this.updatePlayerName(line); }
 
-    return this;
-  }
-
-  getData() {
-    return this.games;
-  }
-
-  setGame() {
-    this.countGames += 1;
-
-    this.games.push({
-      [`game_${this.countGames}`]: {
-        total_kills: 0,
-        players: [],
-        kills: {}
+      if (line.match(patterns.killers)) {
+        this.setTotalResults();
+        this.updatePlayerKills(line);
       }
     });
   }
 
-  setPlayers(line) {
-    const [id, name] = line.replace(patterns.player, '').trim().split('n\\');
-    const countGames = this.countGames;
-    const position = this.countGames - 1;
+  getGames() {
+    const totalGames = Object.keys(this.players).length;
 
-    const playerUpdated = this.games[position][`game_${countGames}`].players
-      .findIndex(player => player.id === id.trim());
+    for (let index = 0; index < totalGames; index += 1) {
+      const keyGame = `game_${index + 1}`;
 
-    if (playerUpdated > -1) {
-      this.games[position][`game_${countGames}`].players[playerUpdated].name = name;
-      return;
+      this.games.push({
+        [keyGame]: {
+          total_kills: this.totalResults[keyGame],
+          players: this.players[keyGame].map(player => player.name),
+          kills: this.players[keyGame].reduce((players, player) => {
+            if (player.id) { players[player.name] = player.kills > 0 ? player.kills : 0; }
+            return players
+          }, {})
+        }
+      })
     }
 
-    this.games[position][`game_${countGames}`].players.push({ id: id.trim(), name: name.trim() });
-    this.games[position][`game_${countGames}`].kills[name] = 0;
+    return this.games;
   }
 
-  setKills(line, index) {
-    const [killerPlayer, killedPlayer] = line
-      .replace(patterns.killers, '')
-      .trim()
-      .split('killed')
-      .map(name => name.trim());
+  getKeyGame() {
+    return `${PREFIX_KEY_GAME}${this.countGames}`;
+  }
 
-    const countGames = this.countGames;
-    const position = this.countGames - 1;
-    const hasPlayer = this.games[position][`game_${countGames}`].players
-      .find(player => player.name === killerPlayer)
+  initGame() {
+    this.countGames += 1;
 
-    this.games[position][`game_${countGames}`].total_kills += 1;
+    const keyGame = this.getKeyGame();
 
-    console.log({
-      killedPlayer,
-      killerPlayer,
-      line: line.replace(patterns.killers, '').trim().split('killed')
-    })
+    this.players[keyGame] = [];
+    this.totalResults[keyGame] = 0;
+  }
 
-    if (killerPlayer === DEAD_BY_WORLD) {
-      console.log('line killed by world', {
-        index,
-        line,
-        killerPlayer,
-        killedPlayer,
-      });
-      console.log('\n')
-      this.games[position][`game_${countGames}`].kills[killedPlayer] -= 1;
+  setTotalResults() {
+    const keyGame = this.getKeyGame();
+    const hasTotalResults = this.totalResults[keyGame];
+
+    if (!hasTotalResults) {
+      this.totalResults[keyGame] = 1;
       return;
     }
 
-    if (hasPlayer) {
-      console.log('line killed by player', {
-        index,
-        line,
-        killerPlayer,
-        killedPlayer,
-      });
-      console.log('\n')
-      this.games[position][`game_${countGames}`].kills[killerPlayer] += 1;
+    this.totalResults[keyGame] += 1;
+  }
+
+  setPlayers(line) {
+    const keyGame = this.getKeyGame();
+    const playerId = line.replace(patterns.playerConnect, '').trim();
+    const playerIndex = this.players[keyGame]
+      .findIndex(player => player.id === playerId.trim());
+
+    if (playerIndex === -1) {
+      this.players[keyGame].push({ id: playerId, name: '', kills: 0 })
+    }
+  }
+
+  updatePlayerName(line) {
+    const keyGame = this.getKeyGame();
+    const [id, name] = line.replace(patterns.playerInfoChanged, '').trim().split('n\\');
+    const playerIndex = this.players[keyGame]
+      .findIndex(player => player.id === id.trim());
+
+    if (playerIndex > -1) {
+      this.players[keyGame][playerIndex].name = name;
+    }
+  }
+
+  updatePlayerKills(line) {
+    const keyGame = this.getKeyGame();
+    const [ids, names] = line.replace(patterns.killers, '').trim().split(': ');
+    const [killerPlayerId, killedPlayerId, ] = ids.split(' ');
+    const isDeadByWorld = names.includes(DEAD_BY_WORLD);
+    const playerId = isDeadByWorld ? killedPlayerId : killerPlayerId;
+
+    const playerIndex = this.players[keyGame]
+      .findIndex(player => player.id === playerId);
+
+    if (playerIndex > -1) {
+      if (isDeadByWorld) {
+        this.players[keyGame][playerIndex].kills -= 1;
+        return;
+      }
+      this.players[keyGame][playerIndex].kills += 1;
     }
   }
 }

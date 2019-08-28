@@ -6,7 +6,7 @@ const notFound = require('./app/middlewares/not-found');
 const app = express();
 
 app.use(log);
-// app.use(notFound);
 app.use(routes);
+app.use(notFound);
 
 module.exports = app;

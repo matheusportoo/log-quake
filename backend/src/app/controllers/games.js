@@ -9,8 +9,8 @@ const readFileAsync = promisify(fs.readFile)
 module.exports = {
   async index(request, response) {
     const log = await readFileAsync(pathLog, { encoding: encodingLog });
-    const parser = new ParserLog(log).init();
-    const games = parser.getData();
+    const parser = new ParserLog(log);
+    const games = parser.getGames();
 
     return response.json(games);
   },
@@ -18,10 +18,10 @@ module.exports = {
   async show(request, response) {
     const { id } = request.params;
     const log = await readFileAsync(pathLog, { encoding: encodingLog });
-    const parser = new ParserLog(log).init();
-    const data = parser.getData();
+    const parser = new ParserLog(log);
+    const games = parser.getGames();
 
-    const game = data.find(item => Object.keys(item)[0] === `game_${id}`);
+    const game = games.find(item => Object.keys(item)[0] === `game_${id}`);
 
     if (!game) {
       return response.status(400).json({ error: 'game does not found' });
