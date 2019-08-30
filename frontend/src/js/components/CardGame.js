@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CardGame = ({ title, players, kills, totalKills }) => (
-  <article className="c-card-game">
+const CardGame = ({ title, players, kills, totalKills, customClasses }) => (
+  <article className={`c-card-game ${customClasses}`}>
     <h2 className="o-title c-card-game__title">{ title }</h2>
     <p className="o-tag">Total kills: <strong>{ totalKills }</strong></p>
     <ul className="c-card-game__players">
@@ -17,6 +17,7 @@ const CardGame = ({ title, players, kills, totalKills }) => (
 
 CardGame.propTypes = {
   title: PropTypes.string,
+  customClasses: PropTypes.string,
   players: PropTypes.array,
   kills: PropTypes.object,
   totalKills: PropTypes.number

@@ -27,6 +27,6 @@ module.exports = {
       return response.status(400).json({ error: 'game does not found' });
     }
 
-    return response.json(game[`game_${id}`]);
+    return response.json(game);
   }
 };

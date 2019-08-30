@@ -1,6 +1,10 @@
 .c-card-game {
   display: inline-block;
   font-size: 0;
+  opacity: 0;
+  animation-name: show-card-game;
+  animation-fill-mode: forwards;
+  animation-duration: 0.75s;
 
   &__title {
     font-size: to-rem(18);
@@ -21,4 +25,9 @@
       margin-right: 6px;
     }
   }
+}
+
+@keyframes show-card-game {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }

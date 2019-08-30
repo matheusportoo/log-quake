@@ -5,7 +5,14 @@
     padding: 20px;
     border: 1px solid var(--color-highlight);
     display: grid;
+    grid-template-rows: 60px 1fr;
     height: 100%;
+  }
+
+  &__list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
@@ -15,13 +22,110 @@
     }
 
     &::-webkit-scrollbar-track {
-      border-left: 1px solid var(--color-highlight);
+      border-right: 1px solid var(--color-highlight);
       border-radius: 0px;
     }
 
     &::-webkit-scrollbar-thumb {
       background-color: var(--color-highlight);
       border-radius: 0px;
+    }
+  }
+
+  &__list-item {
+    width: 32%;
+    margin-top: 30px;
+  }
+
+  &__form-label {
+    font-family: var(--font-family-highlight);
+    margin-right: 10px;
+
+    .-highlight {
+      font-family: var(--font-family-highlight);
+    }
+  }
+
+  &__form-input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-highlight);
+    padding: 0;
+    height: to-rem(38);
+    display: inline-block;
+    vertical-align: top;
+    max-width: 150px;
+    width: 100%;
+    caret-color: var(--color-highlight);
+    font-family: var(--font-family-highlight);
+    color: var(--color-highlight);
+    font-size: to-rem(16);
+    outline: none;
+
+    &::placeholder {
+      color: var(--color-highlight);
+    }
+  }
+
+  &__form-button {
+    margin-left: 10px;
+  }
+
+  &__error {
+    font-family: var(--font-family-highlight);
+    color: var(--color-highlight);
+    position: relative;
+
+    &::after {
+      content: '';
+      width: 15px;
+      height: 20px;
+      position: absolute;
+      right: -20px;
+      top: 0;
+      display: inline-block;
+      background-color: var(--color-highlight);
+      animation-name: cursor-text;
+      animation-iteration-count: infinite;
+      animation-duration: 1s;
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes cursor-text {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@include respond-to(tablet) {
+  .c-main-content {
+    &__list-item {
+      width: 48.5%;
+    }
+  }
+}
+
+@include respond-to(mobile) {
+  .c-main-content {
+    &__wrapper {
+      grid-template-rows: 80px 1fr;
+    }
+
+    &__list-item {
+      width: 100%;
+    }
+
+    &__form-label {
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    &__form-input {
+      max-width: 100px;
+      font-size: 16px;
+      height: 38px;
     }
   }
 }
