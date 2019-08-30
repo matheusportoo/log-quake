@@ -45,6 +45,7 @@ class MainContent extends Component {
                 kills={ kills }
                 players={ players }
                 totalKills={ totalKills }
+                key={ `card-${key}` }
               />
             )
           })}

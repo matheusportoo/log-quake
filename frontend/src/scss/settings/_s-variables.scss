@@ -9,3 +9,33 @@
   --font-family-highlight: 'Inconsolata', monospace;
   --font-family-common: 'Montserrat', sans-serif;
 }
+
+[data-mode="light"] {
+  --color-dark: #f0f0f0;
+  --color-light: #222;
+}
+
+[data-theme="theme1"] {
+  --color-highlight: #4196eb;
+  --color-highlight-darken: #368adf;
+}
+
+[data-theme="theme2"] {
+  --color-highlight: #9566ff;
+  --color-highlight-darken: #9555ff;
+}
+
+[data-theme="theme3"] {
+  --color-highlight: #ff6160;
+  --color-highlight-darken: #ff617b;
+}
+
+[data-theme="theme4"] {
+  --color-highlight: #ffa730;
+  --color-highlight-darken: #ffb230;
+}
+
+[data-theme="theme5"] {
+  --color-highlight: #59db2a;
+  --color-highlight-darken: #4fc225;
+}

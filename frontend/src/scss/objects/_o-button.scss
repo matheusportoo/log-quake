@@ -52,7 +52,9 @@
   width: to-rem(26);
   height: to-rem(26);
   display: inline-block;
-  border-radius: 4px;
+  outline: 3px solid transparent;
+
+  &:hover { outline-color: var(--color-light); }
 
   &.-theme1 { background-color: #4196eb; }
   &.-theme2 { background-color: #9566ff; }
@@ -60,6 +62,12 @@
   &.-theme4 { background-color: #ffa730;  }
   &.-theme5 { background-color: #59db2a;  }
 }
+
+[data-theme="theme1"] .o-button.-choose-theme.-theme1 { outline-color: var(--color-light); }
+[data-theme="theme2"] .o-button.-choose-theme.-theme2 { outline-color: var(--color-light); }
+[data-theme="theme3"] .o-button.-choose-theme.-theme3 { outline-color: var(--color-light); }
+[data-theme="theme4"] .o-button.-choose-theme.-theme4 { outline-color: var(--color-light); }
+[data-theme="theme5"] .o-button.-choose-theme.-theme5 { outline-color: var(--color-light); }
 
 @include respond-to(mobile) {
   .o-button.-choose-theme {

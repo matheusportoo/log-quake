@@ -3,4 +3,18 @@
   width: to-rem(28);
   height: to-rem(28);
   cursor: pointer;
+
+  &:hover {
+    color: var(--color-light);
+  }
+}
+
+[data-mode="light"] .o-icon.-light { color: var(--color-light); }
+[data-mode="dark"] .o-icon.-dark { color: var(--color-light); }
+
+@include respond-to(mobile) {
+  .o-icon {
+    width: to-rem(20);
+    height: to-rem(20);
+  }
 }
