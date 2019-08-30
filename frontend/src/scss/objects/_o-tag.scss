@@ -1,0 +1,9 @@
+.o-tag {
+  --color-dark: #222;
+
+  font-size: to-rem(14);
+  color: var(--color-dark);
+  padding: 5px;
+  background-color: var(--color-highlight);
+  font-family: var(--font-family-highlight);
+}

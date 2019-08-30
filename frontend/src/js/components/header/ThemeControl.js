@@ -3,10 +3,11 @@ import Button from '../Button';
 
 const root = document.documentElement;
 const themeColors = {
-  main: { colorHighlight: '#4196eb', colorHighlightDarken: '#368adf' },
-  second: { colorHighlight: '#9566FF', colorHighlightDarken: '#9555FF' },
-  third: { colorHighlight: '#FF6160', colorHighlightDarken: '#FF617B' },
-  fourth: { colorHighlight: '#FFA730', colorHighlightDarken: '#FFB230' }
+  theme1: { colorHighlight: '#4196eb', colorHighlightDarken: '#368adf' },
+  theme2: { colorHighlight: '#9566ff', colorHighlightDarken: '#9555ff' },
+  theme3: { colorHighlight: '#ff6160', colorHighlightDarken: '#ff617b' },
+  theme4: { colorHighlight: '#ffa730', colorHighlightDarken: '#ffb230' },
+  theme5: { colorHighlight: '#59db2a', colorHighlightDarken: '#4fc225' },
 }
 
 const changeThemeColor = (theme) => {
@@ -21,7 +22,8 @@ const ThemeControl = () => (
         type="button"
         text=""
         onClick={ () => changeThemeColor(color) }
-        customClasses={`-choose-theme -${color} c-header__chage-theme-button`} />
+        customClasses={`-choose-theme -${color} c-header__chage-theme-button`}
+        key={ `theme-controls-${color}` } />
     )) }
   </div>
 );

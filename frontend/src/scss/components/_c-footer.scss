@@ -22,3 +22,11 @@
     margin-bottom: 0;
   }
 }
+
+@include respond-to(mobile) {
+  .c-footer {
+    &__author {
+      font-size: to-rem(14);
+    }
+  }
+}

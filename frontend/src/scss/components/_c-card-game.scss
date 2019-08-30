@@ -1,0 +1,24 @@
+.c-card-game {
+  display: inline-block;
+  font-size: 0;
+
+  &__title {
+    font-size: to-rem(18);
+  }
+
+  &__players { padding: 0; }
+
+  &__player {
+    font-family: var(--font-family-highlight);
+    list-style: none;
+    font-size: to-rem(15);
+    line-height: 1.2;
+
+    &::before {
+      content: '»';
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  }
+}

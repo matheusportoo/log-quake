@@ -96,6 +96,9 @@
     }
 
     &__accessibility-controls { float: left; }
-    &__chage-theme-controls { float: right; }
+    &__chage-theme-controls {
+      float: right;
+      margin-top: 2px;
+    }
   }
 }

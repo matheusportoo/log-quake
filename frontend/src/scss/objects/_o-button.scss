@@ -54,8 +54,16 @@
   display: inline-block;
   border-radius: 4px;
 
-  &.-main { background-color: #4196eb; }
-  &.-second { background-color: #9566FF; }
-  &.-third { background-color: #FF6160; }
-  &.-fourth { background-color: #FFA730;  }
+  &.-theme1 { background-color: #4196eb; }
+  &.-theme2 { background-color: #9566ff; }
+  &.-theme3 { background-color: #ff6160; }
+  &.-theme4 { background-color: #ffa730;  }
+  &.-theme5 { background-color: #59db2a;  }
+}
+
+@include respond-to(mobile) {
+  .o-button.-choose-theme {
+    width: to-rem(20);
+    height: to-rem(20);
+  }
 }
