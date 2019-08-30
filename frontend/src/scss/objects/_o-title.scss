@@ -1,0 +1,10 @@
+.o-title {
+  color: var(--color-highlight);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-highlight);
+  line-height: 1.2;
+
+  strong {
+    font-weight: var(--font-weight-bold);
+  }
+}

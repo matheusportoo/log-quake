@@ -1,0 +1,28 @@
+.l-app {
+  $header-height: 100px;
+  $footer-height: 80px;
+
+  display: grid;
+  width: 100%;
+  max-width: 1270px;
+  margin: 0 auto;
+
+  &__header {
+    height: $header-height;
+  }
+
+  &__main-content {
+    height: calc(100vh - #{$header-height + $footer-height});
+  }
+
+  &__footer {
+    height: $footer-height;
+  }
+}
+
+@include respond-to(mobile) {
+  .l-app {
+    &__header { height: 120px; }
+    &__main-content { height: calc(100vh - 200px); }
+  }
+}

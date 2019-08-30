@@ -1,0 +1,23 @@
+.o-text {
+  color: var(--color-light);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+
+  strong {
+    font-weight: var(--font-weight-bold);
+  }
+
+  &.-highlight {
+    color: var(--color-highlight);
+    font-weight: var(--font-weight-bold);
+    font-size: to-rem(18);
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-highlight-darken);
+    }
+  }
+}

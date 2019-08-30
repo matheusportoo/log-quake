@@ -1,0 +1,61 @@
+.o-button {
+  position: relative;
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 0;
+}
+
+.o-button.-default {
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 6px;
+  outline-color: var(--color-highlight);
+
+  &:hover,
+  &:focus {
+    span { background-color: var(--color-highlight-darken); }
+    &::before { opacity: 0.5; }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--color-highlight-darken);
+    outline: 6px solid var(--color-highlight-darken);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  span {
+    --color-light: #f0f0f0;
+
+    display: inline-block;
+    background-color: var(--color-highlight);
+    color: var(--color-light);
+    font-weight: var(--font-weight-bold);
+    font-size: to-rem(14);
+    padding: 10px 20px;
+    transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 1;
+    border-radius: 4px;
+  }
+}
+
+.o-button.-choose-theme {
+  width: to-rem(26);
+  height: to-rem(26);
+  display: inline-block;
+  border-radius: 4px;
+
+  &.-main { background-color: #4196eb; }
+  &.-second { background-color: #9566FF; }
+  &.-third { background-color: #FF6160; }
+  &.-fourth { background-color: #FFA730;  }
+}
