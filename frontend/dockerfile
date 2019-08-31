@@ -1,0 +1,9 @@
+FROM mhart/alpine-node:12
+
+WORKDIR /app/frontend
+
+COPY . .
+
+RUN yarn install
+
+CMD [ "yarn", "start" ]
