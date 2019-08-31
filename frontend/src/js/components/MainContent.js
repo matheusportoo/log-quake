@@ -49,18 +49,18 @@ class MainContent extends Component {
         <div className="c-main-content__wrapper">
         <div className="c-main-content__search">
           <form className="c-main-content__form">
-            <label className="o-text c-main-content__form-label">Fetch by game:</label>
-            <input className="c-main-content__form-input" placeholder="type game 1..." type="text" ref="term"></input>
+            <label className="o-text c-main-content__form-label">Fetch by number game:</label>
+            <input className="c-main-content__form-input" placeholder="'game 1'" ref="term"></input>
             <Button type="submit" text="search" customClasses="-default c-main-content__form-button" onClick={ this.submit } />
             <Button type="reset" text="reset" customClasses="-outline c-main-content__form-button" onClick={ this.fetch } />
           </form>
         </div>
           <div className="c-main-content__list">
-            { this.state.errorMessage ?
+            { this.state.errorMessage &&
               <span className="o-text c-main-content__error">» {this.state.errorMessage} :(</span>
-            : null }
+            }
 
-            { this.state.games.length && this.state.games.map((game, i) => {
+            { !!this.state.games.length && this.state.games.map((game, i) => {
 
               const key = Object.keys(game)[0];
               const { kills, players, total_kills: totalKills } = game[key];

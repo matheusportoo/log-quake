@@ -54,13 +54,19 @@
     height: to-rem(38);
     display: inline-block;
     vertical-align: top;
-    max-width: 150px;
+    max-width: 80px;
     width: 100%;
     caret-color: var(--color-highlight);
     font-family: var(--font-family-highlight);
     color: var(--color-highlight);
     font-size: to-rem(16);
     outline: none;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
     &::placeholder {
       color: var(--color-highlight);
@@ -75,6 +81,7 @@
     font-family: var(--font-family-highlight);
     color: var(--color-highlight);
     position: relative;
+    margin-top: 30px;
 
     &::after {
       content: '';
@@ -123,7 +130,6 @@
     }
 
     &__form-input {
-      max-width: 100px;
       font-size: 16px;
       height: 38px;
     }

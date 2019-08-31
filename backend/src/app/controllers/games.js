@@ -24,7 +24,7 @@ module.exports = {
     const game = games.find(item => Object.keys(item)[0] === `game_${id}`);
 
     if (!game) {
-      return response.status(400).json({ error: 'game does not found' });
+      return response.status(400).json({ error: `Game ${id} not found! There are only ${games.length}` });
     }
 
     return response.json(game);
